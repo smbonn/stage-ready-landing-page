@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage Ready — Your Personalized AI Interview Coach</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #F7F4EF; --cream-dark: #EDE8DF;
+    --navy: #1C2B4A; --navy-light: #2E4070; --navy-muted: #5A6B8A;
+    --rose: #C4857A; --rose-light: #EDD9D5; --rose-pale: #F7EFED;
+    --sage: #7A9E7E; --sage-light: #D4E5D5; --sage-pale: #EDF4EE;
+    --gold: #B8963E; --gold-light: #F2E8D0; --gold-pale: #FAF4E6;
+    --white: #FFFFFF; --text-muted: #7A8299;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--navy); font-size: 16px; line-height: 1.7; overflow-x: hidden; }
+
+  /* ── NAV ── */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(247,244,239,0.93); backdrop-filter: blur(12px); border-bottom: 1px solid var(--cream-dark); padding: 0 3rem; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 700; color: var(--navy); text-decoration: none; cursor: pointer; }
+  .nav-logo span { color: var(--rose); }
+  .nav-right { display: flex; align-items: center; gap: 1.25rem; }
+  .nav-link { font-size: 0.875rem; color: var(--navy-muted); text-decoration: none; transition: color 0.2s; }
+  .nav-link:hover { color: var(--navy); }
+  .nav-cta { background: var(--navy); color: var(--cream); padding: 0.5rem 1.25rem; border-radius: 100px; font-size: 0.875rem; font-weight: 500; text-decoration: none; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--navy-light); }
+  .nav-back { font-size: 0.875rem; color: var(--navy-muted); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+  .nav-back:hover { color: var(--navy); }
+
+  /* ── PAGE VISIBILITY ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── LANDING: HERO ── */
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center; padding: 8rem 4rem 5rem; gap: 5rem; max-width: 1200px; margin: 0 auto; }
+  .hero-eyebrow { font-size: 0.73rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rose); margin-bottom: 1.25rem; display: flex; align-items: center; gap: 0.5rem; }
+  .hero-eyebrow::before { content: ''; width: 28px; height: 1.5px; background: var(--rose); display: inline-block; flex-shrink: 0; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.75rem, 4.5vw, 4rem); font-weight: 700; line-height: 1.1; color: var(--navy); margin-bottom: 1.5rem; letter-spacing: -0.015em; }
+  .hero h1 em { font-style: italic; color: var(--rose); }
+  .hero-sub { font-size: 1.05rem; color: var(--navy-muted); max-width: 500px; margin-bottom: 2rem; font-weight: 300; line-height: 1.85; }
+  .hero-systems { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-bottom: 2.25rem; }
+  .sys-pill { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 100px; padding: 0.275rem 0.875rem; font-size: 0.78rem; color: var(--navy-muted); }
+  .sys-pill.active { background: var(--rose-pale); border-color: var(--rose-light); color: var(--rose); font-weight: 500; }
+  .hero-actions { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+  .btn-primary { background: var(--navy); color: var(--cream); padding: 0.875rem 2rem; border-radius: 100px; font-size: 0.95rem; font-weight: 500; text-decoration: none; transition: all 0.2s; }
+  .btn-primary:hover { background: var(--navy-light); transform: translateY(-1px); }
+  .hero-price-note { font-size: 0.82rem; color: var(--text-muted); font-weight: 300; }
+  .hero-price-note strong { color: var(--navy); font-weight: 500; }
+
+  /* ── PHONE MOCKUP ── */
+  .hero-visual { position: relative; display: flex; justify-content: center; align-items: center; animation: fadeUp 0.9s ease 0.3s both; }
+  .phone-mockup { width: 272px; height: 550px; background: var(--white); border-radius: 38px; border: 7px solid var(--navy); box-shadow: 18px 28px 56px rgba(28,43,74,0.16); overflow: hidden; position: relative; z-index: 2; }
+  .phone-screen { width: 100%; height: 100%; background: var(--cream); padding: 1.2rem 1rem; display: flex; flex-direction: column; gap: 0.55rem; }
+  .phone-bar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 0.6rem; border-bottom: 1px solid var(--cream-dark); }
+  .phone-logo { font-family: 'Playfair Display', serif; font-size: 0.82rem; font-weight: 700; color: var(--navy); }
+  .phone-logo span { color: var(--rose); }
+  .phone-sys-badge { font-size: 0.58rem; font-weight: 500; background: var(--rose-pale); color: var(--rose); border: 1px solid var(--rose-light); border-radius: 100px; padding: 0.15rem 0.5rem; }
+  .phone-q-card { background: var(--white); border-radius: 12px; padding: 0.7rem 0.8rem; border: 1px solid var(--cream-dark); }
+  .phone-q-label { font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; margin-bottom: 0.3rem; }
+  .phone-q-label.personal { color: var(--rose); }
+  .phone-q-label.current { color: var(--sage); }
+  .phone-q-text { font-size: 0.74rem; color: var(--navy); line-height: 1.5; }
+  .phone-q-meta { font-size: 0.58rem; color: var(--text-muted); margin-top: 0.3rem; font-style: italic; }
+  .phone-scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; }
+  .phone-score-chip { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 8px; padding: 0.3rem 0.25rem; text-align: center; }
+  .phone-score-chip .snum { font-size: 0.85rem; font-weight: 700; color: var(--navy); display: block; line-height: 1; }
+  .phone-score-chip .slbl { font-size: 0.54rem; color: var(--text-muted); display: block; margin-top: 2px; }
+  .phone-score-chip.good .snum { color: var(--sage); }
+  .phone-score-chip.warn .snum { color: var(--gold); }
+  .phone-feedback { background: var(--rose-pale); border-left: 3px solid var(--rose); border-radius: 0 10px 10px 0; padding: 0.6rem 0.7rem; }
+  .phone-fb-label { font-size: 0.56rem; font-weight: 600; color: var(--rose); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.25rem; }
+  .phone-fb-text { font-size: 0.68rem; color: var(--navy); line-height: 1.5; }
+  .phone-mastered { background: var(--sage-pale); border: 1px solid var(--sage-light); border-radius: 10px; padding: 0.45rem 0.7rem; display: flex; align-items: center; gap: 0.4rem; }
+  .phone-mastered span { font-size: 0.66rem; color: var(--sage); font-weight: 500; }
+  .phone-rec-btn { margin-top: auto; background: var(--navy); color: var(--cream); border-radius: 100px; padding: 0.5rem; text-align: center; font-size: 0.7rem; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.35rem; }
+  .rec-dot { width: 7px; height: 7px; background: var(--rose); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
+  .float-card { position: absolute; border-radius: 16px; padding: 0.75rem 1rem; z-index: 3; }
+  .float-card.f1 { top: -10px; right: -44px; background: var(--gold-pale); border: 1px solid rgba(184,150,62,0.28); width: 152px; box-shadow: 0 8px 24px rgba(184,150,62,0.1); }
+  .float-card.f2 { bottom: 60px; left: -36px; background: var(--sage-pale); border: 1px solid var(--sage-light); width: 148px; box-shadow: 0 8px 24px rgba(122,158,126,0.1); }
+  .float-lbl { font-size: 0.6rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.2rem; }
+  .float-lbl.gold { color: var(--gold); }
+  .float-lbl.sage { color: var(--sage); }
+  .float-big { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--navy); line-height: 1; }
+  .float-sub { font-size: 0.66rem; color: var(--text-muted); margin-top: 3px; line-height: 1.3; }
+
+  /* ── TRUST BAR ── */
+  .trust-bar { background: var(--navy); padding: 1.2rem 4rem; display: flex; align-items: center; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+  .trust-item { display: flex; align-items: center; gap: 0.55rem; font-size: 0.83rem; font-weight: 300; color: rgba(247,244,239,0.8); }
+  .trust-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--rose); flex-shrink: 0; }
+
+  /* ── LANDING SECTIONS ── */
+  .section { max-width: 1200px; margin: 0 auto; padding: 6rem 4rem; }
+  .section-eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.875rem; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 3.25vw, 2.875rem); font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 1.1rem; letter-spacing: -0.01em; }
+  .section-title em { font-style: italic; color: var(--rose); }
+  .section-sub { font-size: 1rem; color: var(--text-muted); max-width: 540px; line-height: 1.85; font-weight: 300; }
+
+  /* HOW IT WORKS */
+  .steps-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; margin-top: 4rem; position: relative; }
+  .steps-grid::before { content: ''; position: absolute; top: 1.6rem; left: calc(10% + 0.5rem); right: calc(10% + 0.5rem); height: 1px; background: var(--cream-dark); z-index: 0; }
+  .step { text-align: center; padding: 0 0.625rem; position: relative; z-index: 1; }
+  .step-circle { width: 3.25rem; height: 3.25rem; border-radius: 50%; background: var(--white); border: 1.5px solid var(--cream-dark); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--navy); margin: 0 auto 1.25rem; position: relative; z-index: 2; }
+  .step:first-child .step-circle, .step:last-child .step-circle { background: var(--navy); border-color: var(--navy); color: var(--cream); }
+  .step-title { font-family: 'Playfair Display', serif; font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; line-height: 1.3; }
+  .step-text { font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; font-weight: 300; }
+
+  /* SYSTEMS */
+  .systems-bg { background: var(--navy); padding: 6rem 0; }
+  .systems-inner { max-width: 1200px; margin: 0 auto; padding: 0 4rem; }
+  .systems-inner .section-eyebrow { color: var(--rose); }
+  .systems-inner .section-title { color: var(--white); }
+  .systems-inner .section-sub { color: rgba(247,244,239,0.5); }
+  .systems-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-top: 3rem; }
+  .system-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.09); border-radius: 20px; padding: 1.75rem; transition: border-color 0.2s; }
+  .system-card:hover { border-color: rgba(255,255,255,0.18); }
+  .system-card.span2 { grid-column: span 2; }
+  .sys-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.875rem; }
+  .sys-name { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--white); line-height: 1.2; }
+  .sys-badge { font-size: 0.62rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; border-radius: 100px; padding: 0.22rem 0.625rem; white-space: nowrap; flex-shrink: 0; border: 1px solid transparent; }
+  .sb-rose { background: rgba(196,133,122,0.18); color: #E8A79F; border-color: rgba(196,133,122,0.28); }
+  .sb-sage { background: rgba(122,158,126,0.18); color: #9DC9A1; border-color: rgba(122,158,126,0.28); }
+  .sb-gold { background: rgba(184,150,62,0.18); color: #D4B87A; border-color: rgba(184,150,62,0.28); }
+  .sb-lav  { background: rgba(160,140,200,0.18); color: #C2B0E8; border-color: rgba(160,140,200,0.28); }
+  .sys-desc { font-size: 0.875rem; color: rgba(247,244,239,0.58); line-height: 1.75; font-weight: 300; margin-bottom: 1rem; }
+  .sys-details { display: flex; flex-direction: column; gap: 0.3rem; }
+  .sys-detail { font-size: 0.78rem; color: rgba(247,244,239,0.4); display: flex; align-items: flex-start; gap: 0.45rem; line-height: 1.5; }
+  .sys-detail::before { content: '→'; color: rgba(196,133,122,0.6); flex-shrink: 0; }
+
+  /* FEATURES */
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-top: 3.5rem; }
+  .feature-card { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 20px; padding: 1.75rem; }
+  .feature-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; margin-bottom: 1rem; }
+  .fi-rose { background: var(--rose-pale); } .fi-sage { background: var(--sage-pale); } .fi-gold { background: var(--gold-pale); } .fi-navy { background: rgba(28,43,74,0.07); }
+  .feature-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+  .feature-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.75; font-weight: 300; }
+
+  /* SIERRA */
+  .sierra-bg { background: var(--rose-pale); border-top: 1px solid var(--rose-light); border-bottom: 1px solid var(--rose-light); }
+  .sierra-inner { max-width: 1200px; margin: 0 auto; padding: 6rem 4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .sierra-bubble { background: var(--white); border: 1px solid var(--rose-light); border-radius: 24px; padding: 2rem; }
+  .sierra-from { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.75rem; }
+  .sierra-quote { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.97rem; color: var(--navy); line-height: 1.75; }
+  .sierra-scores { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--cream-dark); }
+  .ss-chip { background: var(--cream); border-radius: 10px; padding: 0.5rem 0.25rem; text-align: center; }
+  .ss-chip .n { font-size: 0.95rem; font-weight: 700; color: var(--navy); display: block; line-height: 1; }
+  .ss-chip .l { font-size: 0.54rem; color: var(--text-muted); display: block; margin-top: 3px; }
+  .ss-chip.g .n { color: var(--sage); } .ss-chip.a .n { color: var(--gold); }
+  .sierra-credit { margin-top: 1.5rem; display: flex; align-items: center; gap: 0.6rem; }
+  .sierra-credit-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--rose); }
+  .sierra-credit-text { font-size: 0.8rem; color: var(--navy-muted); }
+
+  /* PRICING */
+  .pricing-bg { background: var(--navy); padding: 6rem 0; }
+  .pricing-inner { max-width: 760px; margin: 0 auto; padding: 0 2rem; text-align: center; }
+  .pricing-inner .section-eyebrow { color: rgba(196,133,122,0.8); display: block; }
+  .pricing-inner .section-title { color: var(--white); }
+  .price-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 2.75rem; text-align: left; }
+  .price-card { background: var(--cream); border-radius: 24px; padding: 2.25rem; position: relative; }
+  .price-card.featured { background: var(--white); box-shadow: 0 0 0 2px var(--rose-light); }
+  .pc-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--rose); color: var(--white); font-size: 0.63rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.22rem 0.875rem; border-radius: 100px; white-space: nowrap; }
+  .pc-label { font-size: 0.73rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; }
+  .pc-price { display: flex; align-items: baseline; gap: 0.2rem; margin-bottom: 0.4rem; }
+  .pc-curr { font-size: 1.25rem; font-weight: 500; color: var(--navy); margin-top: 0.4rem; }
+  .pc-num { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 700; color: var(--navy); line-height: 1; }
+  .pc-period { font-size: 0.85rem; color: var(--text-muted); }
+  .pc-note { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; min-height: 1.1rem; }
+  .pc-note strong { color: var(--sage); font-weight: 500; }
+  .pc-divider { width: 100%; height: 1px; background: var(--cream-dark); margin: 1.25rem 0; }
+  .pc-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
+  .pc-features li { font-size: 0.875rem; color: var(--navy); display: flex; align-items: flex-start; gap: 0.575rem; line-height: 1.5; }
+  .chk { width: 18px; height: 18px; border-radius: 50%; background: var(--sage-pale); border: 1px solid var(--sage-light); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(--sage); flex-shrink: 0; margin-top: 0.1rem; }
+  .btn-plan { display: block; width: 100%; background: var(--navy); color: var(--cream); padding: 0.875rem; border-radius: 100px; font-size: 0.9rem; font-weight: 500; text-align: center; text-decoration: none; border: none; cursor: pointer; transition: all 0.2s; }
+  .btn-plan:hover { background: var(--navy-light); }
+  .btn-plan.outline { background: transparent; border: 1.5px solid rgba(28,43,74,0.22); color: var(--navy); }
+  .btn-plan.outline:hover { background: rgba(28,43,74,0.04); }
+  .pricing-foot { font-size: 0.78rem; color: rgba(247,244,239,0.38); margin-top: 1.5rem; font-weight: 300; }
+
+  /* ── LEGAL PAGES ── */
+  .legal-page { padding-top: 64px; }
+  .page-hero { background: var(--navy); padding: 4rem 0 3.5rem; text-align: center; }
+  .page-eyebrow { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rose); margin-bottom: 0.875rem; }
+  .page-title { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 2.75rem); font-weight: 700; color: var(--white); line-height: 1.2; margin-bottom: 0.875rem; }
+  .page-date { font-size: 0.85rem; color: rgba(247,244,239,0.45); font-weight: 300; }
+  .content-wrap { max-width: 740px; margin: 0 auto; padding: 4rem 2rem 6rem; }
+  .intro-block { background: var(--rose-pale); border: 1px solid var(--rose-light); border-radius: 16px; padding: 1.75rem 2rem; margin-bottom: 3rem; }
+  .intro-block p { font-size: 0.95rem; color: var(--navy); line-height: 1.85; font-weight: 300; }
+  .intro-block p + p { margin-top: 0.75rem; }
+  .toc { background: var(--white); border: 1px solid var(--cream-dark); border-radius: 16px; padding: 1.5rem 2rem; margin-bottom: 3rem; }
+  .toc-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; }
+  .toc ol { padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.35rem; }
+  .toc li { font-size: 0.875rem; }
+  .toc a { color: var(--rose); text-decoration: none; transition: color 0.2s; }
+  .toc a:hover { color: var(--navy); }
+  .policy-section { margin-bottom: 3rem; scroll-margin-top: 80px; }
+  .policy-section:last-of-type { margin-bottom: 0; }
+  .content-wrap h2 { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; padding-bottom: 0.625rem; border-bottom: 1px solid var(--cream-dark); }
+  .content-wrap p { font-size: 0.95rem; color: var(--navy); line-height: 1.85; font-weight: 300; margin-bottom: 0.875rem; }
+  .content-wrap p:last-child { margin-bottom: 0; }
+  .content-wrap ul, .content-wrap ol { padding-left: 1.25rem; margin-bottom: 0.875rem; display: flex; flex-direction: column; gap: 0.45rem; }
+  .content-wrap li { font-size: 0.95rem; color: var(--navy); line-height: 1.7; font-weight: 300; }
+  .content-wrap strong { font-weight: 500; color: var(--navy); }
+  .content-wrap a { color: var(--rose); text-decoration: none; }
+  .content-wrap a:hover { text-decoration: underline; }
+  .highlight-box { background: var(--white); border: 1px solid var(--cream-dark); border-left: 3px solid var(--rose); border-radius: 0 12px 12px 0; padding: 1.25rem 1.5rem; margin: 1.5rem 0; }
+  .highlight-box p { margin: 0; font-size: 0.9rem; }
+  .contact-block { background: var(--navy); border-radius: 16px; padding: 2rem; margin-top: 3rem; }
+  .contact-block h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+  .contact-block p { color: rgba(247,244,239,0.7) !important; font-size: 0.9rem; margin-bottom: 0.5rem; }
+  .contact-block a { color: var(--rose) !important; text-decoration: none; }
+  .contact-block a:hover { text-decoration: underline; }
+
+  /* ── SHARED FOOTER ── */
+  footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.07); padding: 2.5rem 4rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
+  .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; color: var(--cream); cursor: pointer; }
+  .footer-logo span { color: var(--rose); }
+  .footer-links { display: flex; gap: 1.5rem; list-style: none; }
+  .footer-links a { font-size: 0.78rem; color: rgba(247,244,239,0.42); text-decoration: none; transition: color 0.2s; cursor: pointer; }
+  .footer-links a:hover { color: var(--cream); }
+  .footer-copy { font-size: 0.72rem; color: rgba(247,244,239,0.28); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+  .hero-content > * { animation: fadeUp 0.7s ease both; }
+  .hero-content > *:nth-child(1) { animation-delay: 0.08s; }
+  .hero-content > *:nth-child(2) { animation-delay: 0.18s; }
+  .hero-content > *:nth-child(3) { animation-delay: 0.28s; }
+  .hero-content > *:nth-child(4) { animation-delay: 0.4s; }
+  .hero-content > *:nth-child(5) { animation-delay: 0.52s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; padding: 7rem 2rem 3rem; gap: 2rem; }
+    .hero-visual { display: none; }
+    .steps-grid { grid-template-columns: 1fr 1fr; } .steps-grid::before { display: none; }
+    .systems-grid { grid-template-columns: 1fr; } .system-card.span2 { grid-column: span 1; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .sierra-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .price-cards { grid-template-columns: 1fr; }
+    .section { padding: 4rem 2rem; } .systems-inner { padding: 4rem 2rem; }
+    .trust-bar { padding: 1.2rem 2rem; gap: 1.5rem; }
+    footer { flex-direction: column; align-items: flex-start; padding: 2rem; }
+    nav { padding: 0 1.5rem; } .nav-link { display: none; }
+  }
+  @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } .steps-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     SHARED NAV — content swaps via JS
+     ══════════════════════════════════════════ -->
+<nav id="main-nav">
+  <a class="nav-logo" onclick="navigate('')">Stage<span>Ready</span></a>
+  <div id="nav-landing" class="nav-right">
+    <a href="#how" class="nav-link" onclick="navigate('');return true;">How It Works</a>
+    <a href="#systems" class="nav-link" onclick="navigate('');return true;">Systems</a>
+    <a href="#pricing" class="nav-link" onclick="navigate('');return true;">Pricing</a>
+    <a href="https://buy.stripe.com/aFafZhepHbxT4EJ7Gv8Vi01" class="nav-cta">Start Practicing</a>
+  </div>
+  <div id="nav-legal" style="display:none;">
+    <span class="nav-back" onclick="navigate('')">← Back to Stage Ready</span>
+  </div>
+</nav>
+
+<!-- ══════════════════════════════════════════
+     PAGE: LANDING
+     ══════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+
+  <section>
+    <div class="hero">
+      <div class="hero-content">
+        <div class="hero-eyebrow">AI Interview Coaching for Pageant Competitors</div>
+        <h1>Your coach is always<br><em>available</em>.<br>Your prep isn't.</h1>
+        <p class="hero-sub">Stage Ready reads your actual paperwork and builds a personalized interview question bank around your story — then gives you an AI coach named Sierra to practice with, anytime, anywhere.</p>
+        <div class="hero-systems">
+          <span class="sys-pill active">Miss America</span>
+          <span class="sys-pill">Miss USA / Miss Teen USA</span>
+          <span class="sys-pill">Miss Volunteer America</span>
+          <span class="sys-pill">Teen Systems</span>
+          <span class="sys-pill">+ More</span>
+        </div>
+        <div class="hero-actions">
+          <a href="https://buy.stripe.com/aFafZhepHbxT4EJ7Gv8Vi01" class="btn-primary">Start Practicing &rarr;</a>
+          <span class="hero-price-note">From <strong>$8.33/month</strong> with annual plan.</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-mockup">
+          <div class="phone-screen">
+            <div class="phone-bar">
+              <div class="phone-logo">Stage<span>Ready</span></div>
+              <div class="phone-sys-badge">Miss America</div>
+            </div>
+            <div class="phone-q-card">
+              <div class="phone-q-label personal">Personal</div>
+              <div class="phone-q-text">"How has your platform shaped who you are as a woman today?"</div>
+              <div class="phone-q-meta">From your platform essay ✦ Based on your paperwork</div>
+            </div>
+            <div class="phone-scores">
+              <div class="phone-score-chip good"><span class="snum">28s</span><span class="slbl">Time</span></div>
+              <div class="phone-score-chip good"><span class="snum">91</span><span class="slbl">Clarity</span></div>
+              <div class="phone-score-chip good"><span class="snum">88</span><span class="slbl">Story</span></div>
+              <div class="phone-score-chip warn"><span class="snum">2</span><span class="slbl">Fillers</span></div>
+            </div>
+            <div class="phone-feedback">
+              <div class="phone-fb-label">Sierra says</div>
+              <div class="phone-fb-text">Strong personal story — that vulnerability is exactly what makes judges lean in. Next time, close with the forward-looking impact to really seal it.</div>
+            </div>
+            <div class="phone-mastered"><span>✓</span><span>3 questions marked Mastered this week</span></div>
+            <div class="phone-q-card" style="background:var(--sage-pale);border-color:var(--sage-light);">
+              <div class="phone-q-label current">Current Events</div>
+              <div class="phone-q-text">"What's one policy shift you'd advocate for in your platform area?"</div>
+            </div>
+            <div class="phone-rec-btn"><div class="rec-dot"></div>Record Your Answer</div>
+          </div>
+        </div>
+        <div class="float-card f1">
+          <div class="float-lbl gold">Questions Generated</div>
+          <div class="float-big">75+</div>
+          <div class="float-sub">personalized to your paperwork</div>
+        </div>
+        <div class="float-card f2">
+          <div class="float-lbl sage">Ideal Answer Time</div>
+          <div class="float-big">20–35s</div>
+          <div class="float-sub">tracked automatically</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="trust-bar">
+    <div class="trust-item"><span class="trust-dot"></span> Personalized to your actual paperwork</div>
+    <div class="trust-item"><span class="trust-dot"></span> Miss America, Miss USA, Miss Volunteer &amp; more</div>
+    <div class="trust-item"><span class="trust-dot"></span> AI coaching feedback in seconds</div>
+    <div class="trust-item"><span class="trust-dot"></span> Practice on any device, anytime</div>
+  </div>
+
+  <section class="section" id="how">
+    <div class="section-eyebrow">How It Works</div>
+    <div class="section-title">From paperwork to<br><em>stage confidence</em></div>
+    <p class="section-sub">Every question Stage Ready generates is traceable to something in your paperwork. Not a generic list. Not someone else's prep. Yours.</p>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-circle">1</div>
+        <div class="step-title">Select Your System</div>
+        <p class="step-text">Choose Miss America, Miss USA, Miss Volunteer, or another system. Stage Ready adapts to your interview format from the start.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle">2</div>
+        <div class="step-title">Upload Your Paperwork</div>
+        <p class="step-text">Upload up to two files — PDF or photo. Platform essay, application, CSI paperwork, bio, S.E.R.V.E. summary. Whatever your system uses.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle">3</div>
+        <div class="step-title">Get Your Question Bank</div>
+        <p class="step-text">Claude AI reads your materials and generates questions tied directly to your story and achievements. Role and behavioral questions are available from day one, even before you upload.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle">4</div>
+        <div class="step-title">Practice with Sierra</div>
+        <p class="step-text">Record your answers. Sierra gives you feedback on structure, content, timing, and filler words — and sounds like a real director, not a generated report.</p>
+      </div>
+      <div class="step">
+        <div class="step-circle">5</div>
+        <div class="step-title">Shape Your Bank</div>
+        <p class="step-text">Edit questions to fit your voice, add your own, delete what doesn't apply, and mark questions Mastered so they leave your queue. The bank is yours.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="systems-bg" id="systems">
+    <div class="systems-inner">
+      <div class="section-eyebrow">Built for Your System</div>
+      <div class="section-title" style="color:var(--white);">One app.<br><em>Every interview format.</em></div>
+      <p class="section-sub">Stage Ready knows the difference between a scored Miss America interview and a Miss USA panel round — because the prep is different, and generic advice doesn't cut it.</p>
+      <div class="systems-grid">
+        <div class="system-card">
+          <div class="sys-header"><div class="sys-name">Miss America</div><div class="sys-badge sb-rose">Scored Interview</div></div>
+          <p class="sys-desc">The interview is a competitive category with real weight. You start with 26 role and behavioral questions from day one, then 75 more generated from your paperwork. Structure and confidence matter as much as content.</p>
+          <div class="sys-details">
+            <div class="sys-detail">Upload: application, platform essay, or CSI paperwork</div>
+            <div class="sys-detail">Categories: Personal, Current Events, Role &amp; Behavioral</div>
+            <div class="sys-detail">Ideal answer: 20–35 seconds, confident and structured</div>
+          </div>
+        </div>
+        <div class="system-card">
+          <div class="sys-header"><div class="sys-name">Miss USA / Miss Teen USA</div><div class="sys-badge sb-sage">Panel Format</div></div>
+          <p class="sys-desc">Panel-format, opinion-based rounds. Two to three minutes, round-robin delivery. Miss USA winners advance to Miss Universe. The goal: hold a position, think on your feet, and never hedge.</p>
+          <div class="sys-details">
+            <div class="sys-detail">Upload: bio, personal statement, platform info</div>
+            <div class="sys-detail">Categories: Personal, Current Events, Role &amp; Behavioral</div>
+            <div class="sys-detail">Coaching focus: conviction and point-of-view under pressure</div>
+          </div>
+        </div>
+        <div class="system-card">
+          <div class="sys-header"><div class="sys-name">Miss Volunteer America</div><div class="sys-badge sb-gold">S.E.R.V.E. Framework</div></div>
+          <p class="sys-desc">A 10-minute interview covering the S.E.R.V.E. framework plus 10 job competencies. Judges receive your paperwork in advance — they already know your story. Closing statement practice is built in and treated as seriously as the questions.</p>
+          <div class="sys-details">
+            <div class="sys-detail">Upload: resume-style paperwork, S.E.R.V.E. summary, or platform essay</div>
+            <div class="sys-detail">Categories: Personal, Community &amp; Issues, Competencies</div>
+            <div class="sys-detail">Partners: St. Jude, Salvation Army, American Red Cross</div>
+          </div>
+        </div>
+        <div class="system-card">
+          <div class="sys-header"><div class="sys-name">Teen Competitors</div><div class="sys-badge sb-lav">Personality-Driven</div></div>
+          <p class="sys-desc">Teen interviews are conversational and personality-driven. Authenticity beats polish. Sierra's coaching for teen competitors focuses on letting the real person come through — not sounding like a rehearsed answer.</p>
+          <div class="sys-details">
+            <div class="sys-detail">Supports: Miss America Teen, Miss Teen USA, Miss Volunteer Teen</div>
+            <div class="sys-detail">Categories: Personal, Current Events, Behavioral</div>
+            <div class="sys-detail">Questions focused on interests, community, school, and what drives them</div>
+          </div>
+        </div>
+        <div class="system-card span2">
+          <div class="sys-header"><div class="sys-name">Any Other System</div><div class="sys-badge sb-rose">Fully Supported</div></div>
+          <p class="sys-desc" style="margin-bottom:0;">If your system isn't listed here, Stage Ready still works — paperwork-driven personalization adapts to any format. Upload what you have, and your question bank is built around your platform and story, not a generic template.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-eyebrow">Features</div>
+    <div class="section-title">Built for competitors who<br>take preparation <em>seriously</em></div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon fi-rose">📄</div><div class="feature-title">Personalized to Your Paperwork</div><p class="feature-text">Every question is traceable to something in your uploaded materials. Not recycled prompts. Not a bank someone else used. Questions tied directly to your platform, your essay, your story.</p></div>
+      <div class="feature-card"><div class="feature-icon fi-rose">🎙️</div><div class="feature-title">Record &amp; Get Real Feedback</div><p class="feature-text">Record your answers in-app. Sierra scores structure, content, timing, and filler words — then gives you one specific thing to improve. Every session. Every answer. No generic reports.</p></div>
+      <div class="feature-card"><div class="feature-icon fi-sage">⏱️</div><div class="feature-title">Timing &amp; Filler Detection</div><p class="feature-text">Automatic tracking for answer length and filler words — um, uh, like, you know. Watch your count drop as you build the habit of pausing instead of filling.</p></div>
+      <div class="feature-card"><div class="feature-icon fi-navy">✏️</div><div class="feature-title">Full Question Control</div><p class="feature-text">Edit any generated question to fit your voice, add your own, delete what doesn't apply. Mark questions Mastered and they leave your practice queue. The bank is yours to shape.</p></div>
+      <div class="feature-card"><div class="feature-icon fi-gold">📊</div><div class="feature-title">Progress Tracking</div><p class="feature-text">Scores tracked per session so you can see improvement over time. A static bank of role and behavioral questions is available from day one — no upload required to start practicing.</p></div>
+      <div class="feature-card"><div class="feature-icon fi-sage">📱</div><div class="feature-title">Practice Anywhere</div><p class="feature-text">Stage Ready is a web app that works on any device. Practice in the hotel room the night before, on the drive between commitments, during lunch. Sierra is always available when you are.</p></div>
+    </div>
+  </section>
+
+  <section class="sierra-bg">
+    <div class="sierra-inner">
+      <div>
+        <div class="section-eyebrow">Your AI Coach</div>
+        <div class="section-title">Sierra doesn't just<br>score you. She<br><em>coaches</em> you.</div>
+        <p class="section-sub" style="margin-bottom:1.5rem;">Sierra's feedback is built on real coaching methodology: lead with what's working, deliver one specific improvement, close with the confidence to try again. She sounds like a director who genuinely believes in you — not a grading system.</p>
+        <p class="section-sub" style="margin-bottom:1.75rem;">Sierra is named after Sierra Marie Bonn — pageant coach, keynote speaker, and founder of ImpACT Consulting. Her coaching philosophy is built into every piece of feedback the app delivers.</p>
+        <div class="sierra-credit"><div class="sierra-credit-dot"></div><div class="sierra-credit-text">Named after Sierra Marie Bonn, founder of ImpACT Consulting</div></div>
+      </div>
+      <div>
+        <div class="sierra-bubble">
+          <div class="sierra-from">Sierra — Your AI Coach</div>
+          <p class="sierra-quote">"You led with your personal story there, and I felt it — that vulnerability is exactly what makes judges lean in. One thing to sharpen: your closing line got quiet when it should have landed harder. Say that last sentence like you mean it. You've got this — try it again and bring that energy all the way through."</p>
+          <div class="sierra-scores">
+            <div class="ss-chip g"><span class="n">28s</span><span class="l">Time</span></div>
+            <div class="ss-chip g"><span class="n">91</span><span class="l">Clarity</span></div>
+            <div class="ss-chip g"><span class="n">88</span><span class="l">Story</span></div>
+            <div class="ss-chip a"><span class="n">2</span><span class="l">Fillers</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing-bg" id="pricing">
+    <div class="pricing-inner">
+      <div class="section-eyebrow">Pricing</div>
+      <div class="section-title" style="font-size:2.25rem;">Simple, flexible plans.<br>Cancel anytime.</div>
+      <div class="price-cards">
+        <div class="price-card">
+          <div class="pc-label">Monthly</div>
+          <div class="pc-price"><span class="pc-curr">$</span><span class="pc-num">14.99</span><span class="pc-period">/mo</span></div>
+          <div class="pc-note">Billed monthly. Cancel anytime.</div>
+          <div class="pc-divider"></div>
+          <ul class="pc-features">
+            <li><span class="chk">✓</span> Personalized question bank from your paperwork</li>
+            <li><span class="chk">✓</span> Unlimited practice sessions</li>
+            <li><span class="chk">✓</span> AI coaching from Sierra on every answer</li>
+            <li><span class="chk">✓</span> Filler word detection &amp; timing feedback</li>
+            <li><span class="chk">✓</span> Progress tracking &amp; Mastered questions</li>
+            <li><span class="chk">✓</span> Full question control — edit, add, delete</li>
+            <li><span class="chk">✓</span> Access on any device</li>
+          </ul>
+          <a href="https://buy.stripe.com/aFafZhepHbxT4EJ7Gv8Vi01" class="btn-plan outline">Start Monthly</a>
+        </div>
+        <div class="price-card featured">
+          <div class="pc-badge">Best Value</div>
+          <div class="pc-label">Annual</div>
+          <div class="pc-price"><span class="pc-curr">$</span><span class="pc-num">99.99</span><span class="pc-period">/yr</span></div>
+          <div class="pc-note"><strong>~$8.33/month</strong> — save 44% vs monthly.</div>
+          <div class="pc-divider"></div>
+          <ul class="pc-features">
+            <li><span class="chk">✓</span> Everything in monthly</li>
+            <li><span class="chk">✓</span> Full year of access through competition season</li>
+            <li><span class="chk">✓</span> Best value for serious competitors</li>
+          </ul>
+          <a href="https://buy.stripe.com/eVq14nepH1Xj1sxbWL8Vi02" class="btn-plan">Start Annual &rarr;</a>
+        </div>
+      </div>
+      <p class="pricing-foot">Secured by Stripe. Cancel anytime. Accessible on any device.</p>
+    </div>
+  </section>
+
+</div><!-- end #page-landing -->
+
+<!-- ══════════════════════════════════════════
+     PAGE: PRIVACY POLICY
+     ══════════════════════════════════════════ -->
+<div id="page-privacy" class="page legal-page">
+  <div class="page-hero">
+    <div class="page-eyebrow">Legal</div>
+    <h1 class="page-title">Privacy Policy</h1>
+    <div class="page-date">Effective Date: June 1, 2026 &nbsp;·&nbsp; Last Updated: June 1, 2026</div>
+  </div>
+  <div class="content-wrap">
+    <div class="intro-block">
+      <p>Stage Ready is a product of ImpACT Consulting. We take your privacy seriously — and we want to be clear about what information we collect, how we use it, and what choices you have. This policy is written to be readable, not just legally compliant.</p>
+      <p>By using Stage Ready, you agree to the practices described in this Privacy Policy. If you have questions or concerns, you can reach us through our website at <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a>.</p>
+    </div>
+    <div class="toc">
+      <div class="toc-title">What's in this policy</div>
+      <ol>
+        <li><a href="#pp-collect">Information We Collect</a></li>
+        <li><a href="#pp-use">How We Use Your Information</a></li>
+        <li><a href="#pp-third">Third-Party Services We Use</a></li>
+        <li><a href="#pp-storage">Data Storage and Retention</a></li>
+        <li><a href="#pp-rights">Your Rights and Choices</a></li>
+        <li><a href="#pp-minors">Children and Teen Users</a></li>
+        <li><a href="#pp-security">Security</a></li>
+        <li><a href="#pp-changes">Changes to This Policy</a></li>
+        <li><a href="#pp-contact">Contact Us</a></li>
+      </ol>
+    </div>
+    <div class="policy-section" id="pp-collect">
+      <h2>1. Information We Collect</h2>
+      <p>We collect information you provide directly, information generated through your use of the app, and limited technical information.</p>
+      <p><strong>Account and contact information.</strong> When you create an account, we collect your name and email address. If you subscribe to Stage Ready, payment is processed by Stripe — we do not store your credit card number or billing details on our servers.</p>
+      <p><strong>Uploaded files.</strong> Stage Ready allows you to upload up to two files (PDF or photo) containing your pageant paperwork — such as your platform essay, application, bio, or other competition materials. These files are used to generate your personalized question bank and are stored securely in your account.</p>
+      <p><strong>Recorded audio.</strong> When you practice answers inside the app, your audio responses are recorded and processed for transcription and coaching feedback. Audio is temporarily processed by AssemblyAI (our transcription provider) and is not retained by AssemblyAI after transcription is complete.</p>
+      <p><strong>Practice session data.</strong> We store your session history, scores, feedback received from Sierra, questions you've marked as Mastered, and any edits or additions you've made to your question bank. This data powers your progress tracking and is visible only to you.</p>
+      <p><strong>Usage and technical data.</strong> We collect standard technical information when you use Stage Ready — such as your device type, browser, IP address, and general usage patterns. This helps us maintain and improve the app. We do not sell this data.</p>
+    </div>
+    <div class="policy-section" id="pp-use">
+      <h2>2. How We Use Your Information</h2>
+      <p>We use the information we collect to:</p>
+      <ul>
+        <li>Generate your personalized interview question bank from your uploaded paperwork</li>
+        <li>Deliver AI coaching feedback from Sierra on your recorded answers</li>
+        <li>Track and display your progress across practice sessions</li>
+        <li>Process and manage your subscription through Stripe</li>
+        <li>Send transactional emails related to your account (receipts, subscription updates, password resets)</li>
+        <li>Send occasional product updates and coaching tips — you can opt out of these at any time</li>
+        <li>Troubleshoot issues and improve the app</li>
+      </ul>
+      <div class="highlight-box"><p>We do not sell your personal information, your uploaded paperwork, or your practice session data to any third party. Ever.</p></div>
+    </div>
+    <div class="policy-section" id="pp-third">
+      <h2>3. Third-Party Services We Use</h2>
+      <p>Stage Ready uses a small number of trusted third-party services to deliver core functionality. Each has their own privacy policy governing how they handle data.</p>
+      <p><strong>Anthropic (Claude AI).</strong> Your uploaded paperwork and question generation prompts are processed by Anthropic's Claude API to generate your personalized question bank and coaching feedback. We do not send more information than necessary to generate your questions. You can review Anthropic's policies at <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">anthropic.com/legal/privacy</a>.</p>
+      <p><strong>AssemblyAI.</strong> Audio recordings of your practice answers are sent to AssemblyAI for transcription and filler word detection. Audio is processed in real time and is not retained by AssemblyAI after transcription. Their privacy practices are at <a href="https://www.assemblyai.com/legal/privacy-policy" target="_blank" rel="noopener">assemblyai.com/legal/privacy-policy</a>.</p>
+      <p><strong>Stripe.</strong> All subscription payments are processed by Stripe, Inc. Stage Ready does not store, see, or have access to your full credit card or payment details. Stripe's privacy policy is at <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a>.</p>
+      <p><strong>Supabase.</strong> Stage Ready uses Supabase to store account information, uploaded files, and session data securely. Supabase is SOC 2 compliant. Their privacy policy is at <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a>.</p>
+      <p>We do not use advertising networks, and no third-party advertisers have access to your data through Stage Ready.</p>
+    </div>
+    <div class="policy-section" id="pp-storage">
+      <h2>4. Data Storage and Retention</h2>
+      <p>Your account information, uploaded files, question bank, and session history are stored for as long as your account is active. If you cancel your subscription, your account data is retained for 60 days in case you choose to reactivate, and then deleted.</p>
+      <p>If you request deletion of your account, we will permanently delete your data within 30 days, except where we are required by law to retain certain records (such as payment transaction records, which Stripe retains per their legal obligations).</p>
+      <p>Uploaded paperwork files are stored only within your account. We do not use your paperwork to train AI models, and we do not share your files with any third party beyond what is necessary to generate your question bank via the Anthropic API.</p>
+    </div>
+    <div class="policy-section" id="pp-rights">
+      <h2>5. Your Rights and Choices</h2>
+      <p>You have the following rights regarding your information:</p>
+      <ul>
+        <li><strong>Access.</strong> You can view your account information, uploaded files, and session history at any time from within the app.</li>
+        <li><strong>Correction.</strong> You can update your name, email, and question bank at any time within the app.</li>
+        <li><strong>Deletion.</strong> You can delete your uploaded files, individual questions, or your entire account. Account deletion requests can be submitted through our website at <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a>.</li>
+        <li><strong>Portability.</strong> You can request an export of your session data and question bank by contacting us through our website.</li>
+        <li><strong>Opt-out of marketing emails.</strong> Every marketing email we send includes an unsubscribe link. Transactional emails (receipts, account notices) cannot be opted out of while your account is active.</li>
+      </ul>
+      <p>If you are located in the European Economic Area, the United Kingdom, or California, you may have additional rights under applicable law (including GDPR and CCPA). Please reach out through our website at <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a> to exercise any of these rights.</p>
+    </div>
+    <div class="policy-section" id="pp-minors">
+      <h2>6. Children and Teen Users</h2>
+      <p>Stage Ready is designed to support teen pageant competitors as a significant part of our user base. We take this responsibility seriously.</p>
+      <p>Stage Ready is not directed at children under 13. Users under 13 may not create accounts. Users between the ages of 13 and 17 may use Stage Ready with the awareness and, where required by applicable law, consent of a parent or guardian.</p>
+      <p>We do not knowingly collect personal information from children under 13. If we become aware that we have inadvertently collected information from a child under 13, we will delete it promptly. If you believe we have collected information from a child under 13, please reach out immediately through our website at <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a>.</p>
+      <p>If you are a parent or guardian of a teen competitor using Stage Ready, you may contact us to review, request deletion of, or restrict the processing of your teen's data.</p>
+    </div>
+    <div class="policy-section" id="pp-security">
+      <h2>7. Security</h2>
+      <p>We take reasonable technical and organizational measures to protect your information from unauthorized access, loss, misuse, or alteration. These include encrypted data transmission (HTTPS), secure cloud storage through Supabase, and access controls that limit who within our organization can access account data.</p>
+      <p>No method of transmission over the internet is 100% secure. While we work hard to protect your information, we cannot guarantee absolute security. If you have reason to believe your account has been compromised, please reach out through our website immediately.</p>
+    </div>
+    <div class="policy-section" id="pp-changes">
+      <h2>8. Changes to This Policy</h2>
+      <p>We may update this Privacy Policy from time to time as Stage Ready grows or as applicable law requires. When we make material changes, we will notify you by email and update the "Last Updated" date at the top of this page.</p>
+      <p>Continued use of Stage Ready after a policy update constitutes your acceptance of the revised terms. If you do not agree to the updated policy, you may cancel your subscription and delete your account at any time.</p>
+    </div>
+    <div class="policy-section" id="pp-contact">
+      <h2>9. Contact Us</h2>
+      <p>If you have questions, concerns, or requests related to this Privacy Policy or your data, we're here.</p>
+    </div>
+    <div class="contact-block">
+      <h3>Stage Ready — ImpACT Consulting</h3>
+      <p>Website: <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a></p>
+      <p style="margin-top:0.75rem;font-size:0.78rem;color:rgba(247,244,239,0.35);line-height:1.6;">Stage Ready is not affiliated with, endorsed by, or officially connected to the Miss America Organization, Miss Universe Organization, Miss USA, Miss Teen USA, Miss Volunteer America, or any other pageant system or organization.</p>
+    </div>
+  </div>
+</div><!-- end #page-privacy -->
+
+<!-- ══════════════════════════════════════════
+     PAGE: TERMS OF SERVICE
+     ══════════════════════════════════════════ -->
+<div id="page-terms" class="page legal-page">
+  <div class="page-hero">
+    <div class="page-eyebrow">Legal</div>
+    <h1 class="page-title">Terms of Service</h1>
+    <div class="page-date">Effective Date: June 1, 2026 &nbsp;·&nbsp; Last Updated: June 1, 2026</div>
+  </div>
+  <div class="content-wrap">
+    <div class="intro-block">
+      <p>These Terms of Service govern your use of Stage Ready, a web application and service provided by ImpACT Consulting ("we," "us," or "our"). By creating an account or using Stage Ready in any way, you agree to these terms.</p>
+      <p>Please read these terms carefully. The most important things to know: Stage Ready is a subscription service, AI-generated coaching feedback is for practice purposes only and does not guarantee competition results, and you own your uploaded content.</p>
+    </div>
+    <div class="toc">
+      <div class="toc-title">What's in these terms</div>
+      <ol>
+        <li><a href="#tos-acceptance">Acceptance of Terms</a></li>
+        <li><a href="#tos-service">The Service</a></li>
+        <li><a href="#tos-accounts">Accounts and Eligibility</a></li>
+        <li><a href="#tos-billing">Subscriptions and Billing</a></li>
+        <li><a href="#tos-content">Your Content</a></li>
+        <li><a href="#tos-ai">AI Coaching — What It Is and Isn't</a></li>
+        <li><a href="#tos-use">Acceptable Use</a></li>
+        <li><a href="#tos-ip">Intellectual Property</a></li>
+        <li><a href="#tos-disclaimers">Disclaimers</a></li>
+        <li><a href="#tos-liability">Limitation of Liability</a></li>
+        <li><a href="#tos-termination">Termination</a></li>
+        <li><a href="#tos-law">Governing Law</a></li>
+        <li><a href="#tos-changes">Changes to These Terms</a></li>
+        <li><a href="#tos-contact">Contact Us</a></li>
+      </ol>
+    </div>
+    <div class="policy-section" id="tos-acceptance">
+      <h2>1. Acceptance of Terms</h2>
+      <p>By accessing or using Stage Ready — including creating an account, uploading files, recording practice answers, or completing a subscription purchase — you agree to be bound by these Terms of Service and our Privacy Policy.</p>
+      <p>If you do not agree to these terms, do not use Stage Ready. If you are under 18, your use of the service indicates that a parent or guardian has reviewed and agreed to these terms on your behalf where required by applicable law.</p>
+    </div>
+    <div class="policy-section" id="tos-service">
+      <h2>2. The Service</h2>
+      <p>Stage Ready is a web-based application that provides AI-powered interview preparation tools for pageant competitors. Core features include:</p>
+      <ul>
+        <li>Personalized interview question generation based on uploaded pageant paperwork</li>
+        <li>Audio recording and transcription of practice answers</li>
+        <li>AI coaching feedback from Sierra, our AI coach persona, on structure, content, timing, and filler words</li>
+        <li>Question bank management — editing, adding, deleting, and marking questions as Mastered</li>
+        <li>Progress tracking across practice sessions</li>
+      </ul>
+      <p>Stage Ready is a web application accessible on any device with an internet connection. We do not guarantee availability on any specific platform or operating system. Features may be added, modified, or removed at our discretion with reasonable notice.</p>
+    </div>
+    <div class="policy-section" id="tos-accounts">
+      <h2>3. Accounts and Eligibility</h2>
+      <p>To use Stage Ready, you must create an account with a valid email address. You are responsible for maintaining the security of your account credentials and for all activity that occurs under your account.</p>
+      <p>You must be at least 13 years of age to create an account. Users between 13 and 17 should have a parent or guardian's awareness and, where required by law, consent before creating an account and uploading personal documents.</p>
+      <p>You agree to provide accurate, current, and complete information when creating your account and to update it as needed. We reserve the right to suspend or terminate accounts that contain false information or that violate these terms.</p>
+      <p>You may not share your account with others or allow others to access Stage Ready using your credentials. Each subscription is for a single user.</p>
+    </div>
+    <div class="policy-section" id="tos-billing">
+      <h2>4. Subscriptions and Billing</h2>
+      <p><strong>Plans and pricing.</strong> Stage Ready is offered on a subscription basis: $14.99 per month (billed monthly) or $99.99 per year (billed annually, approximately $8.33 per month). Pricing is subject to change with at least 30 days' notice to current subscribers.</p>
+      <p><strong>Billing.</strong> All payments are processed by Stripe, Inc. By providing payment information, you authorize us to charge your payment method at the applicable subscription rate on a recurring basis until you cancel. You represent that you are authorized to use the payment method provided.</p>
+      <p><strong>Renewal.</strong> Subscriptions renew automatically at the end of each billing period (monthly or annually) unless you cancel before the renewal date. You will receive an email reminder before your annual subscription renews.</p>
+      <p><strong>Cancellation.</strong> You may cancel your subscription at any time from within your account settings or through our website at <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a>. Cancellation takes effect at the end of your current billing period — you will retain full access through the period you have already paid for. We do not offer partial refunds for unused portions of a billing period.</p>
+      <div class="highlight-box"><p><strong>Refunds.</strong> If you are unsatisfied with Stage Ready within the first 7 days of your initial subscription, reach out through our website at <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a> and we will issue a full refund. After 7 days, all subscription payments are final and non-refundable. Annual subscribers who cancel mid-year are not entitled to a prorated refund.</p></div>
+      <p><strong>Failed payments.</strong> If a payment fails, we will attempt to notify you by email. Access to Stage Ready may be suspended if payment cannot be collected after reasonable attempts. You are responsible for keeping your payment information current.</p>
+      <p><strong>Taxes.</strong> Subscription prices do not include applicable taxes. You are responsible for any taxes that may apply based on your location.</p>
+    </div>
+    <div class="policy-section" id="tos-content">
+      <h2>5. Your Content</h2>
+      <p><strong>Ownership.</strong> You own the content you upload to Stage Ready. This includes your paperwork files, recorded audio, and any custom questions you add to your question bank. Uploading content to Stage Ready does not transfer ownership to us.</p>
+      <p><strong>License you grant us.</strong> By uploading content to Stage Ready, you grant ImpACT Consulting a limited, non-exclusive license to process, store, and use that content solely for the purpose of providing the service to you — including sending your paperwork to the Anthropic API to generate your question bank, and sending your audio to AssemblyAI for transcription. We do not use your content for any other purpose.</p>
+      <p><strong>Your responsibility.</strong> You are responsible for ensuring that any content you upload does not violate the rights of any third party and does not include content that is illegal, harmful, or in violation of these terms. You represent that you have the right to upload the content you provide.</p>
+      <p><strong>AI-generated content.</strong> The question bank and coaching feedback generated by Stage Ready are outputs of AI models (Anthropic's Claude) based on your inputs. These outputs are provided for your personal practice use. We do not claim ownership of AI-generated outputs that are based on your uploaded materials.</p>
+    </div>
+    <div class="policy-section" id="tos-ai">
+      <h2>6. AI Coaching — What It Is and Isn't</h2>
+      <p>Sierra, Stage Ready's AI coach persona, is powered by large language model technology and is designed to provide structured practice feedback on your recorded answers. We have built Sierra's methodology around real coaching principles, and we believe she provides genuinely useful guidance.</p>
+      <div class="highlight-box"><p>Sierra is an AI coaching tool, not a licensed coach, psychologist, or pageant judge. Her feedback is for practice and educational purposes only. Stage Ready does not guarantee that use of the app will result in improved competition scores, titles, or any specific outcome.</p></div>
+      <p>AI-generated feedback may not always be accurate, complete, or reflective of how any specific pageant judge panel evaluates competitors. Feedback quality depends in part on the clarity and completeness of your uploaded paperwork and recorded answers.</p>
+      <p>By using Sierra's coaching features, you understand and accept that the feedback is generated by an AI system, may not be perfect, and should be used as one tool among many in your preparation — not as a substitute for working with a qualified human coach.</p>
+    </div>
+    <div class="policy-section" id="tos-use">
+      <h2>7. Acceptable Use</h2>
+      <p>You agree to use Stage Ready only for lawful, personal competition preparation purposes consistent with these terms. You agree not to:</p>
+      <ul>
+        <li>Share your account or allow others to access the service using your credentials</li>
+        <li>Upload content that is illegal, defamatory, obscene, harassing, or that infringes the rights of any third party</li>
+        <li>Attempt to reverse engineer, decompile, or extract the underlying code or AI models of Stage Ready</li>
+        <li>Use Stage Ready to train, fine-tune, or improve any external AI model or system</li>
+        <li>Scrape, crawl, or otherwise automate interaction with the service</li>
+        <li>Attempt to gain unauthorized access to any part of the service or its infrastructure</li>
+        <li>Use the service in any way that could damage, overburden, or impair its performance</li>
+        <li>Misrepresent your identity or affiliation when using the service</li>
+      </ul>
+      <p>We reserve the right to suspend or terminate your account if we determine, in our sole discretion, that you have violated these acceptable use requirements.</p>
+    </div>
+    <div class="policy-section" id="tos-ip">
+      <h2>8. Intellectual Property</h2>
+      <p>Stage Ready, including its name, design, interface, coaching methodology, question templates, and underlying software, is the intellectual property of ImpACT Consulting. Nothing in these terms transfers any ownership of Stage Ready's intellectual property to you.</p>
+      <p>The "Sierra" AI coach persona — including her name, feedback structure, and coaching voice — was developed by ImpACT Consulting and is named after Sierra Marie Bonn. The persona and its associated methodology are proprietary to ImpACT Consulting.</p>
+      <p>You may not reproduce, redistribute, or create derivative works from any part of Stage Ready without our prior written consent.</p>
+    </div>
+    <div class="policy-section" id="tos-disclaimers">
+      <h2>9. Disclaimers</h2>
+      <p>Stage Ready is provided "as is" and "as available" without warranties of any kind, express or implied. To the fullest extent permitted by law, ImpACT Consulting disclaims all warranties, including implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</p>
+      <p>We do not warrant that the service will be uninterrupted, error-free, or free of viruses or other harmful components. We do not warrant that AI-generated questions or coaching feedback will be accurate, complete, or suitable for any specific competition or judging panel.</p>
+      <p>Stage Ready is not affiliated with, endorsed by, sponsored by, or officially connected to any pageant organization or system, including but not limited to the Miss America Organization, Miss Universe Organization, Miss USA, Miss Teen USA, Miss Volunteer America, Miss Volunteer Teen America, or any state, local, or international pageant system operating under those or similar names. All system-specific content within Stage Ready is provided for independent educational and preparation purposes only. Use of system names is for descriptive reference only and does not imply any official relationship or endorsement.</p>
+    </div>
+    <div class="policy-section" id="tos-liability">
+      <h2>10. Limitation of Liability</h2>
+      <p>To the fullest extent permitted by applicable law, ImpACT Consulting and its affiliates, officers, employees, and agents will not be liable for any indirect, incidental, special, consequential, or punitive damages — including lost profits, loss of data, or loss of goodwill — arising out of or in connection with your use of Stage Ready, even if we have been advised of the possibility of such damages.</p>
+      <p>Our total liability to you for any claims arising out of or relating to these terms or your use of Stage Ready is limited to the total amount you paid to us in the 12 months preceding the claim.</p>
+      <p>Some jurisdictions do not allow the exclusion or limitation of certain damages. In those jurisdictions, our liability is limited to the maximum extent permitted by law.</p>
+    </div>
+    <div class="policy-section" id="tos-termination">
+      <h2>11. Termination</h2>
+      <p><strong>By you.</strong> You may cancel your subscription and delete your account at any time. Instructions for cancellation are available in your account settings or through our website at <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a>. Cancellation takes effect at the end of your current billing period.</p>
+      <p><strong>By us.</strong> We reserve the right to suspend or terminate your account at any time, with or without notice, if we determine that you have violated these Terms of Service, engaged in fraudulent activity, or if we discontinue the service. In the event of termination due to our discontinuation of the service, we will provide at least 30 days' notice and a prorated refund for any unused portion of a paid annual subscription.</p>
+      <p><strong>Effect of termination.</strong> Upon termination, your right to access Stage Ready ceases. Your uploaded files and session data will be deleted in accordance with our Privacy Policy. Sections of these terms that by their nature should survive termination — including intellectual property, disclaimers, and limitation of liability — will remain in effect.</p>
+    </div>
+    <div class="policy-section" id="tos-law">
+      <h2>12. Governing Law</h2>
+      <p>These Terms of Service are governed by and construed in accordance with the laws of the State of Kansas, without regard to its conflict of law principles. Any disputes arising out of or relating to these terms or Stage Ready will be resolved in the state or federal courts located in Kansas, and you consent to personal jurisdiction in those courts.</p>
+      <p>If you are located outside the United States, you agree that your use of Stage Ready is subject to these terms and that any dispute will be governed by Kansas law.</p>
+    </div>
+    <div class="policy-section" id="tos-changes">
+      <h2>13. Changes to These Terms</h2>
+      <p>We may update these Terms of Service from time to time. When we make material changes, we will notify active subscribers by email at least 14 days before the changes take effect and update the "Last Updated" date at the top of this page.</p>
+      <p>Your continued use of Stage Ready after changes take effect constitutes your acceptance of the revised terms. If you do not agree to the updated terms, you may cancel your subscription before the changes take effect.</p>
+    </div>
+    <div class="policy-section" id="tos-contact">
+      <h2>14. Contact Us</h2>
+      <p>Questions about these Terms of Service? We're here.</p>
+    </div>
+    <div class="contact-block">
+      <h3>Stage Ready — ImpACT Consulting</h3>
+      <p>Website: <a href="https://impactconsultingagency.org" target="_blank" rel="noopener">impactconsultingagency.org</a></p>
+      <p style="margin-top:0.75rem;font-size:0.78rem;color:rgba(247,244,239,0.35);line-height:1.6;">Stage Ready is not affiliated with, endorsed by, sponsored by, or officially connected to any pageant organization or system, including but not limited to the Miss America Organization, Miss Universe Organization, Miss USA, Miss Teen USA, Miss Volunteer America, or any state, local, or international pageant system operating under those or similar names.</p>
+    </div>
+  </div>
+</div><!-- end #page-terms -->
+
+<!-- ══════════════════════════════════════════
+     SHARED FOOTER
+     ══════════════════════════════════════════ -->
+<footer>
+  <div class="footer-logo" onclick="navigate('')">Stage<span>Ready</span></div>
+  <ul class="footer-links">
+    <li><a onclick="navigate('privacy')">Privacy Policy</a></li>
+    <li><a onclick="navigate('terms')">Terms of Service</a></li>
+    <li><a href="https://impactconsultingagency.org" target="_blank" rel="noopener">ImpACT Consulting</a></li>
+  </ul>
+  <div class="footer-copy">© 2026 Stage Ready. Built by ImpACT Consulting.</div>
+</footer>
+
+<script>
+  function navigate(page) {
+    if (page) {
+      window.location.hash = page;
+    } else {
+      history.pushState('', document.title, window.location.pathname + window.location.search);
+      render('');
+    }
+  }
+
+  function render(hash) {
+    const landing = document.getElementById('page-landing');
+    const privacy = document.getElementById('page-privacy');
+    const terms   = document.getElementById('page-terms');
+    const navLanding = document.getElementById('nav-landing');
+    const navLegal   = document.getElementById('nav-legal');
+
+    landing.classList.remove('active');
+    privacy.classList.remove('active');
+    terms.classList.remove('active');
+
+    if (hash === 'privacy') {
+      privacy.classList.add('active');
+      navLanding.style.display = 'none';
+      navLegal.style.display = 'flex';
+      document.title = 'Privacy Policy — Stage Ready';
+      window.scrollTo(0, 0);
+    } else if (hash === 'terms') {
+      terms.classList.add('active');
+      navLanding.style.display = 'none';
+      navLegal.style.display = 'flex';
+      document.title = 'Terms of Service — Stage Ready';
+      window.scrollTo(0, 0);
+    } else {
+      landing.classList.add('active');
+      navLanding.style.display = 'flex';
+      navLegal.style.display = 'none';
+      document.title = 'Stage Ready — Your Personalized AI Interview Coach';
+    }
+  }
+
+  window.addEventListener('hashchange', () => {
+    const hash = window.location.hash.replace('#', '');
+    render(hash);
+  });
+
+  // Initial load
+  render(window.location.hash.replace('#', ''));
+</script>
+</body>
+</html>
