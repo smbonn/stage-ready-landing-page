@@ -118,6 +118,11 @@
     .nav-cta:hover {
       background: var(--navy-light);
     }
+
+    .nav-cta:active {
+      background: var(--navy-light);
+      transform: scale(0.97);
+    }
  
     .nav-back {
       font-size: 0.9rem;
@@ -249,6 +254,11 @@
     .btn-primary:hover {
       background: var(--navy-light);
       transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      background: var(--navy-light);
+      transform: scale(0.98);
     }
  
     .hero-price-note {
@@ -700,7 +710,8 @@
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 1rem;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
       margin-bottom: 0.875rem;
     }
  
@@ -1074,6 +1085,10 @@
     .btn-plan:hover {
       background: var(--navy-light);
     }
+
+    .btn-plan:active {
+      transform: scale(0.98);
+    }
  
     .btn-plan.outline {
       background: transparent;
@@ -1386,7 +1401,7 @@
  
       .nav-cta {
         font-size: 0.85rem;
-        padding: 0.45rem 1rem;
+        padding: 0.6rem 1.1rem;
       }
  
       .hero {
@@ -1532,7 +1547,7 @@
  
       .nav-cta {
         font-size: 0.82rem;
-        padding: 0.45rem 1rem;
+        padding: 0.65rem 1.1rem;
       }
  
       .hero {
@@ -2422,18 +2437,25 @@
       render('');
     }
   }
- 
+
   function render(hash) {
+    // In-page section anchors inside legal pages — just scroll, don't switch pages
+    if (hash.startsWith('pp-') || hash.startsWith('tos-')) {
+      const el = document.getElementById(hash);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
     const landing    = document.getElementById('page-landing');
     const privacy    = document.getElementById('page-privacy');
     const terms      = document.getElementById('page-terms');
     const navLanding = document.getElementById('nav-landing');
     const navLegal   = document.getElementById('nav-legal');
- 
+
     landing.classList.remove('active');
     privacy.classList.remove('active');
     terms.classList.remove('active');
- 
+
     if (hash === 'privacy') {
       privacy.classList.add('active');
       navLanding.style.display = 'none';
@@ -2451,14 +2473,16 @@
       navLanding.style.display = 'flex';
       navLegal.style.display   = 'none';
       document.title = 'Stage Ready — Your Personalized AI Interview Coach';
-      window.scrollTo(0, 0);
+      // Only scroll to top when returning from a legal page (empty hash),
+      // not when navigating to in-page anchors like #how, #pricing, #systems
+      if (!hash) window.scrollTo(0, 0);
     }
   }
- 
+
   window.addEventListener('hashchange', () => {
     render(window.location.hash.replace('#', ''));
   });
- 
+
   render(window.location.hash.replace('#', ''));
 </script>
  
