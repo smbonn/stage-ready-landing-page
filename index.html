@@ -1842,7 +1842,7 @@
     <a href="#how" class="nav-link" onclick="navigate('');return true;">How It Works</a>
     <a href="#systems" class="nav-link" onclick="navigate('');return true;">Systems</a>
     <a href="#pricing" class="nav-link" onclick="navigate('');return true;">Pricing</a>
-    <a href="https://buy.stripe.com/aFafZhepHbxT4EJ7Gv8Vi01" class="nav-cta">Start Practicing</a>
+    <a href="#pricing" class="nav-cta" onclick="navigate('');return true;">Start Practicing</a>
   </div>
   <div id="nav-legal" style="display:none;">
     <span class="nav-back" onclick="navigate('')">← Back to Stage Ready</span>
@@ -1869,7 +1869,7 @@
           <span class="sys-pill">+ More</span>
         </div>
         <div class="hero-actions">
-          <a href="https://buy.stripe.com/aFafZhepHbxT4EJ7Gv8Vi01" class="btn-primary">Start Practicing &rarr;</a>
+          <a href="#pricing" class="btn-primary">Start Practicing &rarr;</a>
           <span class="hero-price-note">From <strong>$8.33/month</strong> with annual plan.</span>
         </div>
       </div>
@@ -2149,7 +2149,7 @@
   <div class="page-hero">
     <div class="page-eyebrow">Legal</div>
     <h1 class="page-title">Privacy Policy</h1>
-    <div class="page-date">Effective Date: June 1, 2026 &nbsp;·&nbsp; Last Updated: June 1, 2026</div>
+    <div class="page-date">Effective Date: May 19, 2026 &nbsp;·&nbsp; Last Updated: May 19, 2026</div>
   </div>
   <div class="content-wrap">
     <div class="intro-block">
@@ -2259,7 +2259,7 @@
   <div class="page-hero">
     <div class="page-eyebrow">Legal</div>
     <h1 class="page-title">Terms of Service</h1>
-    <div class="page-date">Effective Date: June 1, 2026 &nbsp;·&nbsp; Last Updated: June 1, 2026</div>
+    <div class="page-date">Effective Date: May 19, 2026 &nbsp;·&nbsp; Last Updated: May 19, 2026</div>
   </div>
   <div class="content-wrap">
     <div class="intro-block">
@@ -2405,8 +2405,8 @@
 <footer>
   <div class="footer-logo" onclick="navigate('')">Stage<span>Ready</span></div>
   <ul class="footer-links">
-    <li><a onclick="navigate('privacy')">Privacy Policy</a></li>
-    <li><a onclick="navigate('terms')">Terms of Service</a></li>
+    <li><a href="#privacy">Privacy Policy</a></li>
+    <li><a href="#terms">Terms of Service</a></li>
     <li><a href="https://impactconsultingagency.org" target="_blank" rel="noopener">ImpACT Consulting</a></li>
   </ul>
   <div class="footer-copy">© 2026 Stage Ready. Built by ImpACT Consulting.</div>
@@ -2451,6 +2451,7 @@
       navLanding.style.display = 'flex';
       navLegal.style.display   = 'none';
       document.title = 'Stage Ready — Your Personalized AI Interview Coach';
+      window.scrollTo(0, 0);
     }
   }
  
