@@ -94,6 +94,7 @@
     }
  
     .nav-link {
+      display: none;
       font-size: 0.9rem;
       color: var(--navy-muted);
       text-decoration: none;
@@ -155,12 +156,11 @@
     ══════════════════════════════════════ */
  
     .hero {
-      min-height: 100vh;
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1fr;
       align-items: center;
-      padding: 8rem 4rem 5rem;
-      gap: 5rem;
+      padding: 6rem 1.25rem 3rem;
+      gap: 2rem;
       max-width: 1200px;
       margin: 0 auto;
     }
@@ -278,8 +278,8 @@
     ══════════════════════════════════════ */
  
     .hero-visual {
+      display: none;
       position: relative;
-      display: flex;
       justify-content: center;
       align-items: center;
       animation: fadeUp 0.9s ease 0.3s both;
@@ -1389,41 +1389,49 @@
        RESPONSIVE — TABLET (≤960px)
     ══════════════════════════════════════ */
  
+    /* ══════════════════════════════════════
+       DESKTOP LAYOUT (≥960px)
+    ══════════════════════════════════════ */
+
+    @media (min-width: 960px) {
+
+      .nav-link {
+        display: block;
+      }
+
+      .hero {
+        min-height: 100vh;
+        grid-template-columns: 1.1fr 0.9fr;
+        padding: 8rem 4rem 5rem;
+        gap: 5rem;
+      }
+
+      .hero-visual {
+        display: flex;
+      }
+    }
+
+
     @media (max-width: 960px) {
- 
+
       nav {
         padding: 0 1.5rem;
       }
- 
-      .nav-link {
-        display: none;
-      }
- 
+
       .nav-cta {
         font-size: 0.85rem;
         padding: 0.6rem 1.1rem;
       }
- 
-      .hero {
-        grid-template-columns: 1fr;
-        padding: 7rem 2rem 3.5rem;
-        gap: 2rem;
-        min-height: auto;
-      }
- 
-      .hero-visual {
-        display: none;
-      }
- 
+
       .hero h1 {
         font-size: 2.75rem;
       }
- 
+
       .hero-sub {
         font-size: 1.05rem;
         max-width: 100%;
       }
- 
+
       .trust-bar {
         padding: 1.25rem 2rem;
         gap: 1rem 2rem;
@@ -1549,11 +1557,7 @@
         font-size: 0.82rem;
         padding: 0.65rem 1.1rem;
       }
- 
-      .hero {
-        padding: 6rem 1.25rem 3rem;
-      }
- 
+
       .hero-eyebrow {
         font-size: 0.72rem;
       }
