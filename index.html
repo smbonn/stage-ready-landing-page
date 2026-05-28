@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
   <style>
  
     /* ══════════════════════════════════════
@@ -2132,45 +2133,10 @@
     <div class="pricing-inner">
       <div class="section-eyebrow">Pricing</div>
       <div class="section-title" style="font-size: 2.25rem;">Simple, flexible plans.<br>Cancel anytime.</div>
-      <div class="price-cards">
-        <div class="price-card">
-          <div class="pc-label">Monthly</div>
-          <div class="pc-price">
-            <span class="pc-curr">$</span>
-            <span class="pc-num">24.99</span>
-            <span class="pc-period">/mo</span>
-          </div>
-          <div class="pc-note">Billed monthly. Cancel anytime.</div>
-          <div class="pc-divider"></div>
-          <ul class="pc-features">
-            <li><span class="chk">✓</span> Personalized question bank from your paperwork</li>
-            <li><span class="chk">✓</span> Up to 300 practice sessions per month</li>
-            <li><span class="chk">✓</span> AI coaching from Sierra on every answer</li>
-            <li><span class="chk">✓</span> Filler word detection &amp; timing feedback</li>
-            <li><span class="chk">✓</span> Progress tracking &amp; Mastered questions</li>
-            <li><span class="chk">✓</span> Full question control — edit, add, delete</li>
-            <li><span class="chk">✓</span> Access on any device</li>
-          </ul>
-          <a href="https://buy.stripe.com/aFafZhepHbxT4EJ7Gv8Vi01" class="btn-plan outline">Start Monthly</a>
-        </div>
-        <div class="price-card featured">
-          <div class="pc-badge">Best Value</div>
-          <div class="pc-label">Annual</div>
-          <div class="pc-price">
-            <span class="pc-curr">$</span>
-            <span class="pc-num">199.99</span>
-            <span class="pc-period">/yr</span>
-          </div>
-          <div class="pc-note"><strong>~$16.67/month</strong> — save 33% vs monthly.</div>
-          <div class="pc-divider"></div>
-          <ul class="pc-features">
-            <li><span class="chk">✓</span> Everything in monthly</li>
-            <li><span class="chk">✓</span> Full year of access through competition season</li>
-            <li><span class="chk">✓</span> Best value for serious competitors</li>
-          </ul>
-          <a href="https://buy.stripe.com/eVq14nepH1Xj1sxbWL8Vi02" class="btn-plan">Start Annual &rarr;</a>
-        </div>
-      </div>
+      <stripe-pricing-table
+        pricing-table-id="prctbl_1Tbuu5FWElgcbMFMAn9zeoV4"
+        publishable-key="pk_live_51TW0gjFWElgcbMFMfBndHEtH0HZeyL6X4GhUCrXKgh9QGgkq1O6lGgOYqRG1KpO3vV494Ne9LI3TYokmeie88pBm00eYJN09jw">
+      </stripe-pricing-table>
       <p class="pricing-foot">Secured by Stripe. Cancel anytime. Accessible on any device.</p>
     </div>
   </section>
